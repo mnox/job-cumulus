@@ -1,7 +1,6 @@
 import type { Config } from "@react-router/dev/config";
 
 export default {
-  // Config options...
-  // Server-side render by default, to enable SPA mode set this to `false`
-  ssr: true,
+  // Don't think I can make SSR work with the Service Worker Mock API
+  ssr: false,
 } satisfies Config;

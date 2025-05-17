@@ -1,0 +1,7 @@
+.column-grid {
+  @apply grid grid-flow-col;
+}
+
+.gutter-primary {
+  @apply p-4;
+}

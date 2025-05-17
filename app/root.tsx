@@ -1,3 +1,7 @@
+import { CssBaseline } from '@mui/material';
+import { useEffect } from 'react';
+import { Provider } from 'react-redux';
+import { ThemeProvider } from "@mui/material/styles"
 import {
   isRouteErrorResponse,
   Links,
@@ -6,9 +10,14 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { AppSidebar } from '~/components/core/AppSidebar';
+import { useAppSelector } from '~/data/store/root-hooks';
+import RootStore from '~/data/store/root-store.config';
+import { setupMockApi } from '~/services/mock/MockAPIServiceWorker';
+import useAppTheme from '~/styles/theme';
 
 import type { Route } from "./+types/root";
-import "./app.css";
+import "./styles/app.scss";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -24,6 +33,14 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  /**
+   * Cannot init Service Worker until window is loaded
+   * and we have access to
+   */
+  useEffect(() => {
+    setupMockApi();
+  }, []);
+  
   return (
     <html lang="en">
       <head>
@@ -33,7 +50,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <Provider store={RootStore}>
+          {children}
+        </Provider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -42,7 +61,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const { darkMode } = useAppSelector((state) => state.UI)
+  const theme = useAppTheme({darkMode});
+  
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AppSidebar />
+    </ThemeProvider>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
