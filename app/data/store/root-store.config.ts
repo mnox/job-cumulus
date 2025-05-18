@@ -9,7 +9,7 @@ import uiSlice from '~/data/ui/UI.slice';
 import usersSlice from '~/data/users/Users.slice';
 import { matchTo } from '~/services/mock/MockAPIServiceWorker';
 
-const RootStore = configureStore({
+const AppRootStore = configureStore({
   reducer: {
     jobs: jobsSlice,
     costFormulas: costFormulasSlice,
@@ -21,9 +21,9 @@ const RootStore = configureStore({
   },
 });
 
-export default RootStore;
-export type RootState = ReturnType<typeof RootStore.getState>;
-export type AppDispatch = typeof RootStore.dispatch;
+export default AppRootStore;
+export type AppRootState = ReturnType<typeof AppRootStore.getState>;
+export type AppDispatch = typeof AppRootStore.dispatch;
 
 export const useMatchSelector = (
   root: string,
@@ -41,7 +41,7 @@ export const useMatchSelector = (
   ));
 }
 
-const resolveStateMatchSource = (identifier: string, state: RootState) => {
+const resolveStateMatchSource = (identifier: string, state: AppRootState) => {
   const reducer = state[identifier];
   return !(reducer satisfies Reducer)
     ? reducer

@@ -1,18 +1,11 @@
 import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from "@mui/material/styles"
 import { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { ThemeProvider } from "@mui/material/styles"
-import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "react-router";
+import { isRouteErrorResponse, Links, Meta, Scripts, ScrollRestoration, } from "react-router";
 import { AppSidebar } from '~/components/core/AppSidebar';
 import { useAppSelector } from '~/data/store/root-hooks';
-import RootStore from '~/data/store/root-store.config';
+import AppRootStore from '~/data/store/root-store.config';
 import { setupMockApi } from '~/services/mock/MockAPIServiceWorker';
 import useAppTheme from '~/styles/theme';
 
@@ -50,7 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Provider store={RootStore}>
+        <Provider store={AppRootStore}>
           {children}
         </Provider>
         <ScrollRestoration />

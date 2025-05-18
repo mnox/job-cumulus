@@ -59,7 +59,9 @@ export default function Dashboard() {
   useEffect(() => {
     dispatch(fetchCustomers())
     dispatch(fetchJobs())
-    dispatch(fetchMaterials())
+    dispatch(fetchMaterials(false))
+    
+    setTimeout(() => dispatch(fetchMaterials(false)), 1000);
   }, [dispatch])
   
   return (
@@ -231,17 +233,7 @@ export default function Dashboard() {
         
         {/* Materials Inventory */}
         <Grid size={'grow'}>
-          <Card>
-            <CardHeader title="Materials Inventory"/>
-            <CardContent>
-              <MaterialsTable />
-            </CardContent>
-            <CardActions>
-              <Button variant="contained" fullWidth>
-                Create Purchase Order
-              </Button>
-            </CardActions>
-          </Card>
+          <MaterialsTable />
         </Grid>
       </Grid>
     </Box>

@@ -281,7 +281,6 @@ export function registerServiceWorker() {
 
 // Call this function to initialize the mock service worker
 export const setupMockApi = ()=> {
-  console.dir(localStorage);
   setTimeout(() => {
     registerServiceWorker()
     initMockServiceWorker()
