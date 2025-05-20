@@ -307,10 +307,10 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
             {open && (
               <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <Typography variant="body2" sx={{ fontWeight: "medium" }}>
-                  John Doe
+                  D. Halwisbacherton III
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  john@example.com
+                  dh@jobcumulus.com
                 </Typography>
               </Box>
             )}
