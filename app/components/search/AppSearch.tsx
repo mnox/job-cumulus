@@ -98,7 +98,7 @@ export function AppSearch({ className }: SearchProps) {
         />
       </div>
       
-      {showResults && (searchResults.length > 0 || isSearching) && (
+      {false && showResults && (searchResults.length > 0 || isSearching) && (
         <div className="absolute left-0 right-0 z-10">
           {isSearching ? (
             <div className="mt-2 rounded-md border bg-background p-2 shadow-sm">
