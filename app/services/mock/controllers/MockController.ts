@@ -1,3 +1,6 @@
+import { SearchableCustomerAttributes } from '~/data/customers/Customer';
+import { SearchableJobAttributes } from '~/data/jobs/Job';
+import { SearchableMaterialAttributes } from '~/data/materials/Material';
 import { mockCustomers } from '~/services/mock/data/customers';
 import { mockFormulas } from '~/services/mock/data/formulas';
 import { mockJobs } from '~/services/mock/data/jobs';
@@ -15,6 +18,12 @@ type CreateMethod<T> = (data: Omit<T, 'id'>) => Promise<T>;
 type UpdateMethod<T> = (id: number, patch: Partial<T>) => Promise<T | null>;
 type DeleteMethod<T> = (id: number) => Promise<boolean>;
 
+export interface MockStoreConfig {
+  name: string;
+  mockResource: any[];
+  searchableAttributes?: string[];
+}
+
 export default class MockController<T extends WithNumericId> {
   static pendingStorageUpdate: boolean = false;
   static dbName = 'cumulusMockStorage';
@@ -25,10 +34,11 @@ export default class MockController<T extends WithNumericId> {
   public mockResource!: T[];
   resources: T[] = [];
   
-  static stores = [
+  static stores: MockStoreConfig[] = [
     {
       name: 'customers',
       mockResource: mockCustomers,
+      searchableAttributes: SearchableCustomerAttributes,
     },
     {
       name: 'formulas',
@@ -37,10 +47,12 @@ export default class MockController<T extends WithNumericId> {
     {
       name: 'jobs',
       mockResource: mockJobs,
+      searchableAttributes: SearchableJobAttributes,
     },
     {
       name: 'materials',
       mockResource: mockMaterials,
+      searchableAttributes: SearchableMaterialAttributes,
     },
     {
       name: 'tools',
@@ -51,6 +63,10 @@ export default class MockController<T extends WithNumericId> {
       mockResource: mockUsers,
     },
   ];
+  
+  static getSearchableStores(): MockStoreConfig[] {
+    return MockController.stores.filter(store => store.searchableAttributes?.length);
+  }
   
   static async initDatabase(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -76,6 +92,9 @@ export default class MockController<T extends WithNumericId> {
   private static initMockStorage(db: IDBDatabase) {
     MockController.stores.forEach(store => {
       const objectStore = db.createObjectStore(store.name, { keyPath: 'id' });
+      store.searchableAttributes?.forEach(searchableAttribute => {
+        objectStore.createIndex(searchableAttribute, searchableAttribute, {unique: false});
+      });
       store.mockResource.forEach(r => objectStore.add(r));
     });
   }

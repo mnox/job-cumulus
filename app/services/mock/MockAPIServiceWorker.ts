@@ -1,4 +1,5 @@
 import MockController from '~/services/mock/controllers/MockController';
+import SearchController from '~/services/mock/controllers/SearchController';
 import CustomerController from "./controllers/CustomerController"
 import FormulaController from "./controllers/FormulaController"
 import JobController from "./controllers/JobController"
@@ -217,6 +218,20 @@ export default class MockAPIServiceWorker {
       }
       
       if (path === '/mock-api/search' && method === "GET") {
+        console.dir('yes');
+        const searchQuery = url.searchParams.get("q")
+        
+        if (!searchQuery || searchQuery.trim().length < 2) {
+          return createJsonResponse([])
+        }
+        
+        // Use the SearchController to perform the search
+        const results = await SearchController.search(searchQuery);
+        console.dir({
+          searchQuery,
+          results,
+        });
+        return createJsonResponse(results)
       }
       
       // If no route matches

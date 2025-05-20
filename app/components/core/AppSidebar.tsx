@@ -14,16 +14,15 @@ import LogoutIcon from "@mui/icons-material/Logout"
 import MenuIcon from "@mui/icons-material/Menu"
 import PeopleIcon from "@mui/icons-material/People"
 import PersonIcon from "@mui/icons-material/Person"
-import SearchIcon from "@mui/icons-material/Search"
+import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from "@mui/icons-material/Settings"
-import { ListItemText, TextField } from '@mui/material';
+import { InputAdornment, ListItemText, TextField } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Avatar from "@mui/material/Avatar"
 import Box from "@mui/material/Box"
 import Divider from "@mui/material/Divider"
 import MuiDrawer from "@mui/material/Drawer"
 import IconButton from "@mui/material/IconButton"
-import InputAdornment from "@mui/material/InputAdornment"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemButton from "@mui/material/ListItemButton"
@@ -270,23 +269,25 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
           'column-grid',
           'p-2',
           'gap-2',
+          'grid-cols-[1fr_auto]'
         )}>
           <TextField
             size="small"
             placeholder={open ? "Search..." : ""}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
-                </InputAdornment>
-              ),
-              sx: {
-                borderRadius: open ? 1 : 4,
-                width: open ? "100%" : 40,
-                pr: open ? undefined : 0,
-              },
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" />
+                  </InputAdornment>
+                ),
+                sx: {
+                  borderRadius: open ? 1 : 4,
+                  pr: open ? undefined : 0,
+                },
+              }
             }}
           />
           <IconButton onClick={handleToggleDarkMode}>
