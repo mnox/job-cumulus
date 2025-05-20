@@ -218,7 +218,6 @@ export default class MockAPIServiceWorker {
       }
       
       if (path === '/mock-api/search' && method === "GET") {
-        console.dir('yes');
         const searchQuery = url.searchParams.get("q")
         
         if (!searchQuery || searchQuery.trim().length < 2) {
@@ -227,10 +226,6 @@ export default class MockAPIServiceWorker {
         
         // Use the SearchController to perform the search
         const results = await SearchController.search(searchQuery);
-        console.dir({
-          searchQuery,
-          results,
-        });
         return createJsonResponse(results)
       }
       
