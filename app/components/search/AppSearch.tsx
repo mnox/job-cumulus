@@ -98,7 +98,7 @@ export function AppSearch({ className }: SearchProps) {
         />
       </div>
       
-      {false && showResults && (searchResults.length > 0 || isSearching) && (
+      {showResults && (searchResults.length > 0 || isSearching) && (
         <div className="absolute left-0 right-0 z-10">
           {isSearching ? (
             <div className="mt-2 rounded-md border bg-background p-2 shadow-sm">
@@ -115,8 +115,7 @@ export function AppSearch({ className }: SearchProps) {
                       className="w-full px-4 py-3 text-left transition-colors hover:bg-muted focus:bg-muted focus:outline-none"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">{result.name}</span>
-                        <span className="text-xs text-muted-foreground">{result.type}</span>
+                        <span className="text-sm font-medium">{result.title}</span>
                       </div>
                     </button>
                   </li>

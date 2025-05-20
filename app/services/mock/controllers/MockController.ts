@@ -1,6 +1,7 @@
 import { SearchableCustomerAttributes } from '~/data/customers/Customer';
 import { SearchableJobAttributes } from '~/data/jobs/Job';
 import { SearchableMaterialAttributes } from '~/data/materials/Material';
+import { ResourceType } from '~/data/search/SearchResult';
 import { mockCustomers } from '~/services/mock/data/customers';
 import { mockFormulas } from '~/services/mock/data/formulas';
 import { mockJobs } from '~/services/mock/data/jobs';
@@ -22,6 +23,8 @@ export interface MockStoreConfig {
   name: string;
   mockResource: any[];
   searchableAttributes?: string[];
+  searchResourceType?: ResourceType;
+  resourceTitleAttribute: string;
 }
 
 export default class MockController<T extends WithNumericId> {
@@ -39,28 +42,37 @@ export default class MockController<T extends WithNumericId> {
       name: 'customers',
       mockResource: mockCustomers,
       searchableAttributes: SearchableCustomerAttributes,
+      searchResourceType: ResourceType.CUSTOMER,
+      resourceTitleAttribute: 'email',
     },
     {
       name: 'formulas',
       mockResource: mockFormulas,
+      resourceTitleAttribute: 'name',
     },
     {
       name: 'jobs',
       mockResource: mockJobs,
       searchableAttributes: SearchableJobAttributes,
+      searchResourceType: ResourceType.JOB,
+      resourceTitleAttribute: 'title',
     },
     {
       name: 'materials',
       mockResource: mockMaterials,
       searchableAttributes: SearchableMaterialAttributes,
+      searchResourceType: ResourceType.MATERIAL,
+      resourceTitleAttribute: 'name',
     },
     {
       name: 'tools',
       mockResource: mockTools,
+      resourceTitleAttribute: 'name',
     },
     {
       name: 'users',
       mockResource: mockUsers,
+      resourceTitleAttribute: 'name',
     },
   ];
   
