@@ -14,9 +14,8 @@ import LogoutIcon from "@mui/icons-material/Logout"
 import MenuIcon from "@mui/icons-material/Menu"
 import PeopleIcon from "@mui/icons-material/People"
 import PersonIcon from "@mui/icons-material/Person"
-import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from "@mui/icons-material/Settings"
-import { InputAdornment, ListItemText, TextField } from '@mui/material';
+import { ListItemText } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Avatar from "@mui/material/Avatar"
 import Box from "@mui/material/Box"
@@ -34,6 +33,7 @@ import Typography from "@mui/material/Typography"
 import classNames from 'classnames';
 import * as React from "react"
 import { NavLink } from 'react-router';
+import { AppSearch } from '~/components/search/AppSearch';
 import { useAppDispatch, useAppSelector } from '~/data/store/root-hooks';
 import { toggleDarkMode } from '~/data/ui/UI.slice';
 
@@ -271,25 +271,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
           'gap-2',
           'grid-cols-[1fr_auto]'
         )}>
-          <TextField
-            size="small"
-            placeholder={open ? "Search..." : ""}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon fontSize="small" />
-                  </InputAdornment>
-                ),
-                sx: {
-                  borderRadius: open ? 1 : 4,
-                  pr: open ? undefined : 0,
-                },
-              }
-            }}
-          />
+          <AppSearch />
           <IconButton onClick={handleToggleDarkMode}>
             {darkMode ? <LightMode /> : <DarkMode />}
           </IconButton>
