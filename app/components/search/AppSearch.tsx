@@ -103,7 +103,7 @@ export function AppSearch({ className }: SearchProps) {
           {isSearching ? (
             <div className="mt-2 rounded-md border bg-background p-2 shadow-sm">
               <div className="flex items-center justify-center py-2">
-                roading
+                Loading...
               </div>
             </div>
           ) : (
