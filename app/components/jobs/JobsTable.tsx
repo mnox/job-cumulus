@@ -1,19 +1,20 @@
-import { TableCell } from '@mui/material';
-import Chip from "@mui/material/Chip"
+import { Chip, TableBody, TableCell } from '@mui/material';
 import Table from "@mui/material/Table"
-import TableBody from "@mui/material/TableBody"
 import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
-import type { Job } from '~/data/jobs/Job';
+import { shallowEqual } from 'react-redux';
+import { selectJobsWithCustomer } from '~/data/jobs/Jobs.selectors';
+import { useAppSelector } from '~/data/store/root-hooks';
 import { useFormatDate } from '~/services/utils';
 
 export interface JobsTableProps {
-  jobs: Job[];
+  limit?: number;
 }
 
-export function JobsTable({jobs}: JobsTableProps) {
-  const slice = jobs.slice(0, 3);
+export function JobsTable({limit}: JobsTableProps) {
+  const jobs = useAppSelector(selectJobsWithCustomer, shallowEqual);
+  const slice = limit ? jobs.slice(0, limit) : jobs;
   return (
     <TableContainer>
       <Table size="small">

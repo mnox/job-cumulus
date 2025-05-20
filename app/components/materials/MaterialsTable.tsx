@@ -163,36 +163,38 @@ export default function MaterialsTable() {
       <CardHeader title="Materials Inventory"/>
       <CardContent>
         <Stack spacing={2}>
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, alignItems: { xs: 'stretch', md: 'center' }, justifyContent: 'space-between' }}>
-            <ToggleButtonGroup
-              value={mode}
-              exclusive
-              onChange={handleModeChange}
-              aria-label="display mode"
-              size="small"
-            >
-              <ToggleButton value={DisplayModes.All} aria-label="all materials">
-                All
-              </ToggleButton>
-              <ToggleButton value={DisplayModes.LowInventory} aria-label="low inventory">
-                Low Inventory
-              </ToggleButton>
-            </ToggleButtonGroup>
-            
-            <TextField
-              size="small"
-              placeholder="Search by name, SKU, or supplier"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ minWidth: 250 }}
-            />
+          <Box className={'column-grid justify-between'}>
+            <Box className={'column-grid gap-2'}>
+              <ToggleButtonGroup
+                value={mode}
+                exclusive
+                onChange={handleModeChange}
+                aria-label="display mode"
+                size="small"
+              >
+                <ToggleButton value={DisplayModes.All} aria-label="all materials">
+                  All
+                </ToggleButton>
+                <ToggleButton value={DisplayModes.LowInventory} aria-label="low inventory">
+                  Low Inventory
+                </ToggleButton>
+              </ToggleButtonGroup>
+              
+              <TextField
+                size="small"
+                placeholder="Search by name, SKU, or supplier"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ minWidth: 250 }}
+              />
+            </Box>
             
             <FormControl sx={{ minWidth: 200 }} size="small">
               <InputLabel id="category-filter-label">Categories</InputLabel>
