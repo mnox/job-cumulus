@@ -13,6 +13,11 @@ export enum MaterialCategories {
 
 export type MaterialCategory = keyof typeof MaterialCategories;
 
+export const SearchableMaterialAttributes = [
+  'name',
+  'sku',
+];
+
 export interface Material {
   id: number;
   name: string;

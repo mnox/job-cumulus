@@ -50,7 +50,7 @@ export const fetchMaterialById = createAsyncThunk(
   }
 );
 
-// omg where has this BEEN ALL MY LIFE. NGXS is officially dead to me.
+// omg where has this BEEN ALL MY LIFE
 export const materialsAdapter = createEntityAdapter({
   selectId: (material: Material) => material.id,
   sortComparer: (a, b) => a.name.localeCompare(b.name),

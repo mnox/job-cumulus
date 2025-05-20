@@ -11,6 +11,10 @@ export enum JobStatuses {
   Cancelled = 'Cancelled',
 }
 
+export const SearchableJobAttributes = [
+  'title',
+];
+
 export type JobStatus = keyof typeof JobStatuses;
 
 export interface Job {

@@ -1,5 +1,12 @@
 import type { Address } from '~/data/misc/Address';
 
+export const SearchableCustomerAttributes = [
+  'firstName',
+  'lastName',
+  'email',
+  'phone',
+];
+
 export interface Customer {
   id: number;
   firstName: string;

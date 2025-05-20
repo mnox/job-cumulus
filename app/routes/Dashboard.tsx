@@ -17,13 +17,13 @@ import Typography from "@mui/material/Typography"
 import classNames from 'classnames';
 import * as React from 'react';
 import { useEffect } from 'react';
+import { shallowEqual } from 'react-redux';
 import { JobsTable } from '~/components/jobs/JobsTable';
-import MaterialsTable from '~/components/materials/MaterialsTable';
 import { fetchCustomers } from '~/data/customers/Customers.slice';
+import { selectJobsWithCustomer } from '~/data/jobs/Jobs.selectors';
 import { fetchJobs } from '~/data/jobs/Jobs.slice';
 import { fetchMaterials } from '~/data/materials/Materials.slice';
-import { useAppDispatch } from '~/data/store/root-hooks';
-import { useMatchSelector } from '~/data/store/root-store.config';
+import { useAppDispatch, useAppSelector } from '~/data/store/root-hooks';
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -50,7 +50,8 @@ function TabPanel(props: TabPanelProps) {
 export default function Dashboard() {
   const dispatch = useAppDispatch()
   const [tabValue, setTabValue] = React.useState(0)
-  const jobsWithCustomer = useMatchSelector('jobs', 'customers', 'customer', 'customerId');
+  
+  const jobsWithCustomer = useAppSelector(selectJobsWithCustomer, shallowEqual);
   
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
@@ -231,10 +232,6 @@ export default function Dashboard() {
           
           </Grid>
         
-        {/* Materials Inventory */}
-        <Grid size={'grow'}>
-          <MaterialsTable />
-        </Grid>
       </Grid>
     </Box>
   )

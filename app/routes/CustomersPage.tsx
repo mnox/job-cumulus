@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Add as AddIcon, FilterList as FilterListIcon, Visibility as VisibilityIcon } from "@mui/icons-material"
 import {
   Box,
   Button,
@@ -14,6 +12,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  type SelectChangeEvent,
   Table,
   TableBody,
   TableCell,
@@ -25,9 +24,9 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  type SelectChangeEvent,
 } from "@mui/material"
-import { Add as AddIcon, FilterList as FilterListIcon, Visibility as VisibilityIcon } from "@mui/icons-material"
+import React, { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import type { Customer } from '~/data/customers/Customer';
 import { fetchCustomers } from '~/data/customers/Customers.slice';
 import { useAppDispatch, useAppSelector } from '~/data/store/root-hooks';
@@ -37,7 +36,8 @@ type Order = "asc" | "desc";
 type OrderBy = "lastName" | "createdAt" | "status";
 
 const CustomersPage: React.FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { customers, loading } = useAppSelector((state) => state.customers)
   
   const [order, setOrder] = useState<Order>("asc")
@@ -92,6 +92,10 @@ const CustomersPage: React.FC = () => {
     
     return order === "asc" ? comparison : -comparison
   })
+  
+  useEffect( () => {
+    dispatch(fetchCustomers());
+  }, [] );
   
   return (
     <Box>

@@ -1,3 +1,10 @@
+import { mockCustomers } from '~/services/mock/data/customers';
+import { mockFormulas } from '~/services/mock/data/formulas';
+import { mockJobs } from '~/services/mock/data/jobs';
+import { mockMaterials } from '~/services/mock/data/materials';
+import { mockTools } from '~/services/mock/data/tools';
+import { mockUsers } from '~/services/mock/data/users';
+
 export type WithNumericId = {
   id: number;
 }
@@ -12,19 +19,40 @@ export default class MockController<T extends WithNumericId> {
   static pendingStorageUpdate: boolean = false;
   static dbName = 'cumulusMockStorage';
   static dbVersion = 1;
-  static db: IDBDatabase | null = null;
+  static db: IDBDatabase;
   
-  resourceKey!: string;
-  mockResource!: T[];
+  public resourceKey!: string;
+  public mockResource!: T[];
   resources: T[] = [];
   
-  constructor() {
-    this.initDatabase().then(() => {
-      this.loadResources();
-    });
-  }
+  static stores = [
+    {
+      name: 'customers',
+      mockResource: mockCustomers,
+    },
+    {
+      name: 'formulas',
+      mockResource: mockFormulas,
+    },
+    {
+      name: 'jobs',
+      mockResource: mockJobs,
+    },
+    {
+      name: 'materials',
+      mockResource: mockMaterials,
+    },
+    {
+      name: 'tools',
+      mockResource: mockTools,
+    },
+    {
+      name: 'users',
+      mockResource: mockUsers,
+    },
+  ];
   
-  private async initDatabase(): Promise<void> {
+  static async initDatabase(): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(MockController.dbName, MockController.dbVersion);
       
@@ -40,12 +68,15 @@ export default class MockController<T extends WithNumericId> {
       
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
-        
-        // Create object stores for each resource type if they don't exist
-        if (!db.objectStoreNames.contains(this.resourceKey)) {
-          db.createObjectStore(this.resourceKey, { keyPath: 'id' });
-        }
+        MockController.initMockStorage(db);
       };
+    });
+  }
+  
+  private static initMockStorage(db: IDBDatabase) {
+    MockController.stores.forEach(store => {
+      const objectStore = db.createObjectStore(store.name, { keyPath: 'id' });
+      store.mockResource.forEach(r => objectStore.add(r));
     });
   }
   
@@ -127,7 +158,6 @@ export default class MockController<T extends WithNumericId> {
   }
   
   public index: IndexMethod<T> = async () => {
-    await this.initDatabase();
     await this.awaitStorageUpdate(false);
     
     return new Promise((resolve) => {
@@ -141,8 +171,6 @@ export default class MockController<T extends WithNumericId> {
   }
   
   public resourceById: GetMethod<T> = async (id) => {
-    await this.initDatabase();
-    
     return new Promise((resolve) => {
       setTimeout(async () => {
         if (!MockController.db) {
@@ -171,9 +199,7 @@ export default class MockController<T extends WithNumericId> {
   }
   
   public createResource: CreateMethod<T> = async (data) => {
-    await this.initDatabase();
     await this.awaitStorageUpdate(true);
-    
     return new Promise((resolve) => {
       setTimeout(async () => {
         const newResource = {
@@ -190,44 +216,38 @@ export default class MockController<T extends WithNumericId> {
   }
   
   public updateResource: UpdateMethod<T> = async (id, patch) => {
-    await this.initDatabase();
     await this.awaitStorageUpdate(true);
     
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        const index = this.resources.findIndex((r) => r.id === id);
-        if (index === -1) return resolve(null);
-        
-        const updatedResource = {
-          ...this.resources[index],
-          ...patch,
-          id: this.resources[index].id, // Ensure ID doesn't change
-        };
-        
-        this.resources[index] = updatedResource;
-        await this.saveToDB(this.resources);
-        
-        resolve({ ...updatedResource });
-      }, 300);
+    return new Promise(async (resolve) => {
+      const index = this.resources.findIndex((r) => r.id === id);
+      if (index === -1) return resolve(null);
+      
+      const updatedResource = {
+        ...this.resources[index],
+        ...patch,
+        id: this.resources[index].id, // Ensure ID doesn't change
+      };
+      
+      this.resources[index] = updatedResource;
+      this.saveToDB(this.resources);
+      
+      resolve({ ...updatedResource });
     });
   }
   
   public deleteResource: DeleteMethod<T> = async (id) => {
-    await this.initDatabase();
     await this.awaitStorageUpdate(true);
     
     return new Promise((resolve) => {
-      setTimeout(async () => {
-        const index = this.resources.findIndex((material) => material.id === id);
-        if (index === -1) {
-          return resolve(false);
-        }
-        
-        this.resources.splice(index, 1);
-        await this.saveToDB(this.resources);
-        
-        resolve(true);
-      }, 300);
+      const index = this.resources.findIndex((material) => material.id === id);
+      if (index === -1) {
+        return resolve(false);
+      }
+      
+      this.resources.splice(index, 1);
+      this.saveToDB(this.resources);
+      
+      resolve(true);
     });
   }
   

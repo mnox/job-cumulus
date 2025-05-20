@@ -1,42 +1,42 @@
 "use client"
 
+import { Cloud, DarkMode, LightMode } from '@mui/icons-material';
+import AssignmentIcon from "@mui/icons-material/Assignment"
+import BarChartIcon from "@mui/icons-material/BarChart"
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
+
+// MUI Icons
+import HomeIcon from "@mui/icons-material/Home"
+import InventoryIcon from "@mui/icons-material/Inventory"
+import LocalShippingIcon from "@mui/icons-material/LocalShipping"
+import LogoutIcon from "@mui/icons-material/Logout"
+import MenuIcon from "@mui/icons-material/Menu"
+import PeopleIcon from "@mui/icons-material/People"
+import PersonIcon from "@mui/icons-material/Person"
+import SearchIcon from "@mui/icons-material/Search"
+import SettingsIcon from "@mui/icons-material/Settings"
+import { ListItemText, TextField } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
-import type { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar/AppBar';
-import classNames from 'classnames';
-import * as React from "react"
-import { styled, type Theme, type CSSObject } from "@mui/material/styles"
+import Avatar from "@mui/material/Avatar"
 import Box from "@mui/material/Box"
+import Divider from "@mui/material/Divider"
 import MuiDrawer from "@mui/material/Drawer"
+import IconButton from "@mui/material/IconButton"
+import InputAdornment from "@mui/material/InputAdornment"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
-import ListItemText from "@mui/material/ListItemText"
-import Divider from "@mui/material/Divider"
-import IconButton from "@mui/material/IconButton"
-import Avatar from "@mui/material/Avatar"
-import TextField from "@mui/material/TextField"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
+import { type CSSObject, styled, type Theme } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
-import InputAdornment from "@mui/material/InputAdornment"
-
-// MUI Icons
-import HomeIcon from "@mui/icons-material/Home"
-import AssignmentIcon from "@mui/icons-material/Assignment"
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
-import PeopleIcon from "@mui/icons-material/People"
-import InventoryIcon from "@mui/icons-material/Inventory"
-import LocalShippingIcon from "@mui/icons-material/LocalShipping"
-import BarChartIcon from "@mui/icons-material/BarChart"
-import SearchIcon from "@mui/icons-material/Search"
-import MenuIcon from "@mui/icons-material/Menu"
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
-import PersonIcon from "@mui/icons-material/Person"
-import SettingsIcon from "@mui/icons-material/Settings"
-import LogoutIcon from "@mui/icons-material/Logout"
-import { Outlet } from "react-router"
-import { Cloud } from '@mui/icons-material';
+import classNames from 'classnames';
+import * as React from "react"
+import { NavLink } from 'react-router';
+import { useAppDispatch, useAppSelector } from '~/data/store/root-hooks';
+import { toggleDarkMode } from '~/data/ui/UI.slice';
 
 const drawerWidth = 240
 
@@ -70,7 +70,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-interface AppBarProps extends MuiAppBarProps {
+interface AppBarProps {
   open?: boolean;
 }
 
@@ -159,13 +159,15 @@ const navItems = [
     icon: <BarChartIcon />,
     href: "/reports",
   },
-]
+];
 
-export function AppSidebar() {
+export function AppSidebar({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(true)
   const [searchQuery, setSearchQuery] = React.useState("")
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const menuOpen = Boolean(anchorEl)
+  const menuOpen = Boolean(anchorEl);
+  const dispatch = useAppDispatch();
+  const { darkMode } = useAppSelector(state => state.UI);
   
   const handleDrawerToggle = () => {
     setOpen(!open)
@@ -177,6 +179,10 @@ export function AppSidebar() {
   
   const handleProfileClose = () => {
     setAnchorEl(null)
+  }
+  
+  const handleToggleDarkMode = () => {
+    dispatch(toggleDarkMode())
   }
   
   return (
@@ -223,41 +229,48 @@ export function AppSidebar() {
         <List>
           {navItems.map((item) => (
             <ListItem key={item.title} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                href={item.href}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                  bgcolor: item.isActive ? "rgba(25, 118, 210, 0.08)" : "transparent",
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                    color: item.isActive ? "primary.main" : "inherit",
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.title}
-                  sx={{
-                    opacity: open ? 1 : 0,
-                    color: item.isActive ? "primary.main" : "inherit",
-                    "& .MuiTypography-root": {
-                      fontWeight: item.isActive ? "medium" : "regular"
-                    }
-                  }}
-                />
-              </ListItemButton>
+              <NavLink to={item.href}>
+                {({ isActive }) => (
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                      bgcolor: isActive ? "rgba(25, 118, 210, 0.08)" : "transparent",
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                        color: isActive ? "primary.main" : "inherit",
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.title}
+                      sx={{
+                        opacity: open ? 1 : 0,
+                        color: isActive ? "primary.main" : "inherit",
+                        "& .MuiTypography-root": {
+                          fontWeight: item.isActive ? "medium" : "regular"
+                        }
+                      }}
+                    />
+                  </ListItemButton>
+                )}
+              </NavLink>
             </ListItem>
           ))}
         </List>
         <Box sx={{ flexGrow: 1 }} />
-        <Box sx={{ p: 2 }}>
+        <Box className={classNames(
+          'column-grid',
+          'p-2',
+          'gap-2',
+        )}>
           <TextField
             size="small"
             placeholder={open ? "Search..." : ""}
@@ -276,9 +289,12 @@ export function AppSidebar() {
               },
             }}
           />
+          <IconButton onClick={handleToggleDarkMode}>
+            {darkMode ? <LightMode /> : <DarkMode />}
+          </IconButton>
         </Box>
         <Divider />
-        <Box sx={{ p: 2 }}>
+        <Box>
           <ListItemButton
             onClick={handleProfileClick}
             sx={{
@@ -302,9 +318,6 @@ export function AppSidebar() {
             anchorEl={anchorEl}
             open={menuOpen}
             onClose={handleProfileClose}
-            MenuListProps={{
-              "aria-labelledby": "profile-button",
-            }}
             anchorOrigin={{
               vertical: "top",
               horizontal: "right",
@@ -336,8 +349,12 @@ export function AppSidebar() {
           </Menu>
         </Box>
       </Drawer>
-      <Outlet />
+      <Box className={'gutter-primary'}>
+        <Box className={'grid'}>
+          <AppBar />
+          {children}
+        </Box>
+      </Box>
     </Box>
-    
   )
 }

@@ -2,7 +2,7 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from "@mui/material/styles"
 import { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { isRouteErrorResponse, Links, Meta, Scripts, ScrollRestoration, } from "react-router";
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, } from "react-router";
 import { AppSidebar } from '~/components/core/AppSidebar';
 import { useAppSelector } from '~/data/store/root-hooks';
 import AppRootStore from '~/data/store/root-store.config';
@@ -28,7 +28,7 @@ export const links: Route.LinksFunction = () => [
 export function Layout({ children }: { children: React.ReactNode }) {
   /**
    * Cannot init Service Worker until window is loaded
-   * and we have access to
+   * and we have access to navigator
    */
   useEffect(() => {
     setupMockApi();
@@ -60,7 +60,9 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppSidebar />
+      <AppSidebar>
+        <Outlet />
+      </AppSidebar>
     </ThemeProvider>
   )
 }
