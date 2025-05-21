@@ -77,7 +77,6 @@ export function AppSearch({ className }: SearchProps) {
   
   return (
     <Autocomplete
-      open={true}
       options={searchResults.map((option) => option.title)}
       renderOption={(params, option) => (
         <Box className={'p-2'}>
