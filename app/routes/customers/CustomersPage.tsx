@@ -33,7 +33,7 @@ import { useAppDispatch, useAppSelector } from '~/data/store/root-hooks';
 import { useFormatDate } from '~/services/utils';
 
 type Order = "asc" | "desc";
-type OrderBy = "lastName" | "createdAt" | "status";
+type OrderBy = "name" | "createdAt" | "status";
 
 const CustomersPage: React.FC = () => {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const CustomersPage: React.FC = () => {
   const { customers, loading } = useAppSelector((state) => state.customers)
   
   const [order, setOrder] = useState<Order>("asc")
-  const [orderBy, setOrderBy] = useState<OrderBy>("lastName")
+  const [orderBy, setOrderBy] = useState<OrderBy>("name")
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   
@@ -76,7 +76,7 @@ const CustomersPage: React.FC = () => {
     let comparison = 0
     
     switch (orderBy) {
-      case "lastName":
+      case "name":
         comparison = a.name.localeCompare(b.name)
         break
       case "createdAt":
@@ -146,9 +146,9 @@ const CustomersPage: React.FC = () => {
                 <TableRow>
                   <TableCell>
                     <TableSortLabel
-                      active={orderBy === "lastName"}
-                      direction={orderBy === "lastName" ? order : "asc"}
-                      onClick={() => handleRequestSort("lastName")}
+                      active={orderBy === "name"}
+                      direction={orderBy === "name" ? order : "asc"}
+                      onClick={() => handleRequestSort("name")}
                     >
                       Name
                     </TableSortLabel>
