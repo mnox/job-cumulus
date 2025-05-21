@@ -1,5 +1,5 @@
 import { ResourceType, type SearchResult } from '~/data/search/SearchResult';
-import MockController, { type MockStoreConfig } from "~/services/mock/controllers/MockController"
+import MockDatabaseProvider, { type MockStoreConfig } from '~/services/mock/MockDatabaseProvider';
 
 export default class SearchController {
   // Search across multiple resource types using cursors
@@ -13,7 +13,7 @@ export default class SearchController {
       
       try {
         // Ensure the database is initialized
-        if (!MockController.db) {
+        if (!MockDatabaseProvider.db) {
           console.error("Database not initialized")
           return []
         }
@@ -31,8 +31,8 @@ export default class SearchController {
   private static async aggregateSearch(searchTerm: string): Promise<SearchResult[]> {
     return new Promise(async (resolve) => {
       try {
-        const db = MockController.db;
-        const searchableStores = MockController.getSearchableStores();
+        const db = MockDatabaseProvider.db;
+        const searchableStores = MockDatabaseProvider.getSearchableStores();
         const storeNames = searchableStores.map(st => st.name);
         
         const transaction = db.transaction(storeNames, "readonly");
@@ -54,7 +54,7 @@ export default class SearchController {
   private static async getStoreResults(searchTerm: string, transaction: IDBTransaction, mockStore: MockStoreConfig): Promise<SearchResult[]> {
     return new Promise(async (resolve) => {
       const store = transaction.objectStore( mockStore.name );
-      const results = await Promise.all(mockStore.searchableAttributes!.map(attribute => SearchController.getIndexResults(
+      const results = await Promise.all(mockStore.searchableAttributes!.map((attribute: string) => SearchController.getIndexResults(
         searchTerm,
         attribute,
         mockStore,

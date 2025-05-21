@@ -1,5 +1,5 @@
-import MockController from '~/services/mock/controllers/MockController';
 import SearchController from '~/services/mock/controllers/SearchController';
+import MockDatabaseProvider from '~/services/mock/MockDatabaseProvider';
 import CustomerController from "./controllers/CustomerController"
 import FormulaController from "./controllers/FormulaController"
 import JobController from "./controllers/JobController"
@@ -260,7 +260,7 @@ function createErrorResponse(message: string, status: number): Response {
 // Initialize the mock service worker
 export async function initMockServiceWorker() {
   // Setup mock DB
-  await MockController.initDatabase();
+  await MockDatabaseProvider.initDatabase();
   // Intercept fetch requests
   const originalFetch = window.fetch;
   // Probably a much better way to register this

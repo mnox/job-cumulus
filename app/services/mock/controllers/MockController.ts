@@ -1,13 +1,4 @@
-import { SearchableCustomerAttributes } from '~/data/customers/Customer';
-import { SearchableJobAttributes } from '~/data/jobs/Job';
-import { SearchableMaterialAttributes } from '~/data/materials/Material';
-import { ResourceType } from '~/data/search/SearchResult';
-import { mockCustomers } from '~/services/mock/data/customers';
-import { mockFormulas } from '~/services/mock/data/formulas';
-import { mockJobs } from '~/services/mock/data/jobs';
-import { mockMaterials } from '~/services/mock/data/materials';
-import { mockTools } from '~/services/mock/data/tools';
-import { mockUsers } from '~/services/mock/data/users';
+import MockDatabaseProvider from '~/services/mock/MockDatabaseProvider';
 
 export type WithNumericId = {
   id: number;
@@ -19,126 +10,27 @@ type CreateMethod<T> = (data: Omit<T, 'id'>) => Promise<T>;
 type UpdateMethod<T> = (id: number, patch: Partial<T>) => Promise<T | null>;
 type DeleteMethod<T> = (id: number) => Promise<boolean>;
 
-export interface MockStoreConfig {
-  name: string;
-  mockResource: any[];
-  searchableAttributes?: string[];
-  searchResourceType?: ResourceType;
-  resourceTitleAttribute: string;
-}
-
 export default class MockController<T extends WithNumericId> {
   static pendingStorageUpdate: boolean = false;
-  static dbName = 'cumulusMockStorage';
-  static dbVersion = 1;
-  static db: IDBDatabase;
   
   public resourceKey!: string;
   public mockResource!: T[];
   resources: T[] = [];
   
-  static stores: MockStoreConfig[] = [
-    {
-      name: 'customers',
-      mockResource: mockCustomers,
-      searchableAttributes: SearchableCustomerAttributes,
-      searchResourceType: ResourceType.CUSTOMER,
-      resourceTitleAttribute: 'email',
-    },
-    {
-      name: 'formulas',
-      mockResource: mockFormulas,
-      resourceTitleAttribute: 'name',
-    },
-    {
-      name: 'jobs',
-      mockResource: mockJobs,
-      searchableAttributes: SearchableJobAttributes,
-      searchResourceType: ResourceType.JOB,
-      resourceTitleAttribute: 'title',
-    },
-    {
-      name: 'materials',
-      mockResource: mockMaterials,
-      searchableAttributes: SearchableMaterialAttributes,
-      searchResourceType: ResourceType.MATERIAL,
-      resourceTitleAttribute: 'name',
-    },
-    {
-      name: 'tools',
-      mockResource: mockTools,
-      resourceTitleAttribute: 'name',
-    },
-    {
-      name: 'users',
-      mockResource: mockUsers,
-      resourceTitleAttribute: 'name',
-    },
-  ];
-  
-  static getSearchableStores(): MockStoreConfig[] {
-    return MockController.stores.filter(store => store.searchableAttributes?.length);
-  }
-  
-  static async initDatabase(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(MockController.dbName, MockController.dbVersion);
-      
-      request.onerror = (event) => {
-        console.error("IndexedDB error:", event);
-        reject("Failed to open database");
-      };
-      
-      request.onsuccess = (event) => {
-        MockController.db = (event.target as IDBOpenDBRequest).result;
-        resolve();
-      };
-      
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        MockController.initMockStorage(db);
-      };
-    });
-  }
-  
-  private static initMockStorage(db: IDBDatabase) {
-    MockController.stores.forEach(store => {
-      const objectStore = db.createObjectStore(store.name, { keyPath: 'id' });
-      store.searchableAttributes?.forEach(searchableAttribute => {
-        objectStore.createIndex(searchableAttribute, searchableAttribute, {unique: false});
-      });
-      store.mockResource.forEach(r => objectStore.add(r));
-    });
-  }
-  
-  private async loadResources(): Promise<void> {
-    try {
-      const data = await this.getFromDB();
-      this.resources = data.length ? this.formatResources(data) : this.formatResources(this.mockResource);
-      
-      // If no data exists, initialize with mock data
-      if (data.length === 0 && this.mockResource.length > 0) {
-        await this.saveToDB(this.mockResource);
-      }
-    } catch (error) {
-      console.error("Error loading resources:", error);
-      this.resources = this.formatResources(this.mockResource);
-    }
-  }
-  
   private getFromDB(): Promise<T[]> {
     return new Promise((resolve, reject) => {
-      if (!MockController.db) {
+      if (!MockDatabaseProvider.db) {
         return resolve([]);
       }
       
       try {
-        const transaction = MockController.db.transaction([this.resourceKey], 'readonly');
+        const transaction = MockDatabaseProvider.db.transaction([this.resourceKey], 'readonly');
         const objectStore = transaction.objectStore(this.resourceKey);
         const request = objectStore.getAll();
         
         request.onsuccess = () => {
-          resolve(request.result || []);
+          const results = this.formatResources(request.result || []);
+          resolve(results);
         };
         
         request.onerror = (event) => {
@@ -152,25 +44,29 @@ export default class MockController<T extends WithNumericId> {
     });
   }
   
-  private saveToDB(data: T[]): Promise<void> {
+  private saveToDB(data: T[], clearExisting: boolean = false): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!MockController.db) {
+      if (!MockDatabaseProvider.db) {
         return reject("Database not initialized");
       }
       
       try {
-        const transaction = MockController.db.transaction([this.resourceKey], 'readwrite');
+        const transaction = MockDatabaseProvider.db.transaction([this.resourceKey], 'readwrite');
         const objectStore = transaction.objectStore(this.resourceKey);
         
-        // Clear existing data
-        const clearRequest = objectStore.clear();
-        
-        clearRequest.onsuccess = () => {
-          // Add all resources
+        if(clearExisting) {
+          const clearRequest = objectStore.clear();
+          
+          clearRequest.onsuccess = () => {
+            data.forEach(item => {
+              objectStore.add(item);
+            });
+          };
+        } else {
           data.forEach(item => {
             objectStore.add(item);
           });
-        };
+        }
         
         transaction.oncomplete = () => {
           MockController.pendingStorageUpdate = false;
@@ -204,12 +100,12 @@ export default class MockController<T extends WithNumericId> {
   public resourceById: GetMethod<T> = async (id) => {
     return new Promise((resolve) => {
       setTimeout(async () => {
-        if (!MockController.db) {
+        if (!MockDatabaseProvider.db) {
           return resolve(null);
         }
         
         try {
-          const transaction = MockController.db.transaction([this.resourceKey], 'readonly');
+          const transaction = MockDatabaseProvider.db.transaction([this.resourceKey], 'readonly');
           const objectStore = transaction.objectStore(this.resourceKey);
           const request = objectStore.get(id);
           
