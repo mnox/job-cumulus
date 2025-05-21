@@ -26,8 +26,6 @@ export default class MockAPIServiceWorker {
     const path = url.pathname
     const method = request.method
     
-    // console.dir(`Mock API: ${method} ${path}`)
-    
     try {
       // Users endpoints
       if (path === "/mock-api/users" && method === "GET") {
