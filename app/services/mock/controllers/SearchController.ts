@@ -44,8 +44,8 @@ export default class SearchController {
         
         resolve(results.flat());
       } catch (error) {
-        console.error("Error accessing customers store:", error)
-        resolve([])
+        console.error("Search Error:", error);
+        resolve([]);
       }
     })
   }

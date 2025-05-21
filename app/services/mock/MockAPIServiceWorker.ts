@@ -7,19 +7,6 @@ import MaterialController from "./controllers/MaterialController"
 import ToolController from "./controllers/ToolController"
 import UserController from "./controllers/UserController"
 
-export const matchTo = (
-  collection: any[],
-  source: any[],
-  relationName: string,
-  joinKey: string,
-  sourceIdentifier: string = 'id',
-) => {
-  return collection.map(resource => ({
-    ...resource,
-    [relationName]: source.find(sr => sr[sourceIdentifier] === resource[joinKey] ),
-  }));
-}
-
 export default class MockAPIServiceWorker {
   async handleApiRequest(request: Request): Promise<Response> {
     const url = new URL(request.url)

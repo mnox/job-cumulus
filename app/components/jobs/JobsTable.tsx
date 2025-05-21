@@ -34,9 +34,7 @@ export function JobsTable({limit}: JobsTableProps) {
                 {job.id}
               </TableCell>
               <TableCell>{
-                job.customer && (
-                  `${job.customer.firstName} ${job.customer.lastName}`
-                )
+                job.customer && (job.customer.name)
               }</TableCell>
               <TableCell>{job.title}</TableCell>
               <TableCell>{useFormatDate(job.startDate)}</TableCell>

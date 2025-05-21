@@ -61,9 +61,8 @@ const CustomersPage: React.FC = () => {
   
   // Filter and sort customers
   const filteredCustomers: Customer[] = customers.filter((customer: Customer) => {
-    const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase()
     const matchesSearch =
-      fullName.includes(searchQuery.toLowerCase()) ||
+      customer.name.includes(searchQuery.toLowerCase()) ||
       (customer.company && customer.company.toLowerCase().includes(searchQuery.toLowerCase())) ||
       customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.phone.includes(searchQuery)
@@ -78,7 +77,7 @@ const CustomersPage: React.FC = () => {
     
     switch (orderBy) {
       case "lastName":
-        comparison = a.lastName.localeCompare(b.lastName)
+        comparison = a.name.localeCompare(b.name)
         break
       case "createdAt":
         comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -183,7 +182,7 @@ const CustomersPage: React.FC = () => {
                   sortedCustomers.map((customer) => (
                     <TableRow hover key={customer.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                       <TableCell component="th" scope="row">
-                        {customer.firstName} {customer.lastName}
+                        {customer.name} {customer.lastName}
                       </TableCell>
                       <TableCell>{customer.company || "-"}</TableCell>
                       <TableCell>{customer.email}</TableCell>

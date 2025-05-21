@@ -28,7 +28,7 @@ export default class MockDatabaseProvider {
       mockResource: mockCustomers,
       searchableAttributes: SearchableCustomerAttributes,
       searchResourceType: ResourceType.CUSTOMER,
-      resourceTitleAttribute: 'email',
+      resourceTitleAttribute: 'name',
     },
     {
       name: 'formulas',

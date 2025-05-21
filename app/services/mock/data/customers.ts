@@ -3,8 +3,7 @@ import type { Customer } from '~/data/customers/Customer';
 export const mockCustomers: Customer[] = [
   {
     id: 1,
-    firstName: "Robert",
-    lastName: "Johnson",
+    name: "Robert Johnson",
     email: "robert.johnson@example.com",
     phone: "(555) 111-2222",
     address: {
@@ -23,8 +22,7 @@ export const mockCustomers: Customer[] = [
   },
   {
     id: 2,
-    firstName: "Emily",
-    lastName: "Davis",
+    name: "Emily Davis",
     email: "emily.davis@example.com",
     phone: "(555) 333-4444",
     address: {
@@ -41,8 +39,7 @@ export const mockCustomers: Customer[] = [
   },
   {
     id: 3,
-    firstName: "Michael",
-    lastName: "Brown",
+    name: "Michael Brown",
     email: "michael.brown@example.com",
     phone: "(555) 555-6666",
     address: {
@@ -61,8 +58,7 @@ export const mockCustomers: Customer[] = [
   },
   {
     id: 4,
-    firstName: "Jennifer",
-    lastName: "Wilson",
+    name: "Jennifer Wilson",
     email: "jennifer.wilson@example.com",
     phone: "(555) 777-8888",
     address: {
@@ -80,8 +76,7 @@ export const mockCustomers: Customer[] = [
   },
   {
     id: 5,
-    firstName: "David",
-    lastName: "Martinez",
+    name: "David Martinez",
     email: "david.martinez@example.com",
     phone: "(555) 999-0000",
     address: {
