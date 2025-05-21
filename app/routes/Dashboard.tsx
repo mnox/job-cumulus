@@ -18,6 +18,7 @@ import classNames from 'classnames';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { shallowEqual } from 'react-redux';
+import { NavLink } from 'react-router';
 import { JobsTable } from '~/components/jobs/JobsTable';
 import { fetchCustomers } from '~/data/customers/Customers.slice';
 import { selectJobsWithCustomer } from '~/data/jobs/Jobs.selectors';
@@ -97,7 +98,9 @@ export default function Dashboard() {
               </CardContent>
               <CardActions>
                 <Button size="small" endIcon={<ArrowUpwardIcon fontSize="small" />}>
-                  View all jobs
+                  <NavLink to={'/jobs'}>
+                    View All Jobs
+                  </NavLink>
                 </Button>
               </CardActions>
             </Card>
@@ -163,7 +166,9 @@ export default function Dashboard() {
                 </CardContent>
                 <CardActions>
                   <Button variant="outlined" fullWidth>
-                    View All Jobs
+                    <NavLink to={'/jobs'}>
+                      View All Jobs
+                    </NavLink>
                   </Button>
                 </CardActions>
               </Card>
