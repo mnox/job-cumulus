@@ -181,9 +181,7 @@ const CustomersPage: React.FC = () => {
                 {sortedCustomers.length > 0 ? (
                   sortedCustomers.map((customer) => (
                     <TableRow hover key={customer.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                      <TableCell component="th" scope="row">
-                        {customer.name} {customer.lastName}
-                      </TableCell>
+                      <TableCell component="th" scope="row">{customer.name}</TableCell>
                       <TableCell>{customer.company || "-"}</TableCell>
                       <TableCell>{customer.email}</TableCell>
                       <TableCell>{customer.phone}</TableCell>
